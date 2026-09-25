@@ -97,10 +97,14 @@ export default function DashboardPage() {
       <Card className="border-primary-500/30 shadow-glow-sm">
         <CardBody>
           <form onSubmit={handleAsk} className="flex gap-3">
+            <label htmlFor="dashboard-question" className="sr-only">
+              Ask a question about your team&apos;s knowledge
+            </label>
             <input
+              id="dashboard-question"
               name="question"
               placeholder="Ask anything... Why did we choose Postgres? What caused the Nov outage?"
-              className="flex-1 bg-brand-bg-subtle border border-brand-border rounded-lg px-4 py-3 text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30"
+              className="flex-1 bg-brand-bg-subtle border border-brand-border rounded-lg px-4 py-3 text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30 min-h-[44px]"
             />
             <Button type="submit">Ask →</Button>
           </form>

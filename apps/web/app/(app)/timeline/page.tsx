@@ -73,12 +73,13 @@ export default function TimelinePage() {
       </div>
 
       {/* Type filters */}
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2 flex-wrap" role="group" aria-label="Filter decisions by type">
         {TYPES.map(t => (
           <button
             key={t}
             onClick={() => changeType(t)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-150 capitalize
+            aria-pressed={typeFilter === t}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-150 capitalize min-h-[36px]
               ${typeFilter === t
                 ? 'bg-primary-500/20 border-primary-500/50 text-primary-300'
                 : 'bg-brand-surface border-brand-border text-neutral-400 hover:border-brand-border hover:text-neutral-200'

@@ -105,10 +105,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             </div>
             <button
               onClick={handleLogout}
-              className="text-neutral-500 hover:text-neutral-300 transition-colors text-xs"
+              className="text-neutral-500 hover:text-neutral-300 transition-colors text-xs px-2 py-1 rounded hover:bg-brand-bg-subtle min-h-[36px] min-w-[36px] flex items-center justify-center"
+              aria-label="Sign out"
               title="Sign out"
             >
-              ↗
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             </button>
           </div>
         </div>
@@ -127,10 +128,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {/* Top bar */}
         <header className="sticky top-0 z-30 h-14 border-b border-brand-border bg-brand-surface/80 backdrop-blur-sm flex items-center px-4 gap-4">
           <button
-            className="lg:hidden text-neutral-400 hover:text-white"
+            className="lg:hidden text-neutral-400 hover:text-white p-2 rounded-lg hover:bg-brand-bg-subtle min-h-[44px] min-w-[44px] flex items-center justify-center"
             onClick={() => setSidebarOpen(true)}
+            aria-label="Open navigation menu"
+            aria-expanded={sidebarOpen}
           >
-            ☰
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
           <div className="flex-1" />
         </header>

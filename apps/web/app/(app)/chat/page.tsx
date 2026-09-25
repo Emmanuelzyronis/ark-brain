@@ -174,13 +174,14 @@ function ChatContent() {
             >
               <div className="flex items-center justify-between gap-2">
                 <span className="truncate">{s.title || 'New conversation'}</span>
-                <span
+                <button
+                  type="button"
                   onClick={(e) => deleteSession(s.id, e)}
-                  className="opacity-0 group-hover:opacity-100 text-neutral-600 hover:text-error text-xs"
-                  title="Delete"
+                  className="opacity-0 group-hover:opacity-100 text-neutral-600 hover:text-error text-xs p-1 rounded min-h-[28px] min-w-[28px] flex items-center justify-center"
+                  aria-label={`Delete conversation: ${s.title || 'New conversation'}`}
                 >
                   ✕
-                </span>
+                </button>
               </div>
               <p className="text-xs text-neutral-600 mt-0.5">{formatRelativeTime(s.created_at)}</p>
             </button>
@@ -193,10 +194,12 @@ function ChatContent() {
         {/* Chat header */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-brand-border">
           <button
-            className="md:hidden text-neutral-400 hover:text-white"
+            className="md:hidden text-neutral-400 hover:text-white p-2 rounded-lg hover:bg-brand-bg-subtle min-h-[44px] min-w-[44px] flex items-center justify-center"
             onClick={() => setSidebarOpen(!sidebarOpen)}
+            aria-label={sidebarOpen ? 'Close conversation history' : 'Open conversation history'}
+            aria-expanded={sidebarOpen}
           >
-            ☰
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
           </button>
           <h2 className="text-sm font-medium text-neutral-300">
             {currentSessionId ? 'Chat session' : 'New conversation'}
@@ -297,11 +300,13 @@ function ChatContent() {
         {/* Input */}
         <div className="p-4 border-t border-brand-border">
           <form onSubmit={sendMessage} className="flex gap-3">
+            <label htmlFor="chat-input" className="sr-only">Ask a question</label>
             <textarea
+              id="chat-input"
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask anything... (Cmd+Enter to send)"
+              placeholder="Ask anything about your team's decisions..."
               rows={1}
               className="flex-1 resize-none bg-brand-surface border border-brand-border rounded-lg px-4 py-3 text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500/30 transition-all max-h-32 overflow-y-auto"
             />
@@ -309,7 +314,7 @@ function ChatContent() {
               Send
             </Button>
           </form>
-          <p className="mt-1.5 text-xs text-neutral-600">Cmd+Enter to send</p>
+          <p className="mt-1.5 text-xs text-neutral-600">Ctrl+Enter or Cmd+Enter to send</p>
         </div>
       </div>
 
@@ -318,7 +323,7 @@ function ChatContent() {
         <aside className="w-80 border-l border-brand-border bg-brand-surface flex flex-col shrink-0 animate-slide-in-right">
           <div className="p-4 border-b border-brand-border flex items-center justify-between">
             <h3 className="font-medium text-white text-sm">Sources</h3>
-            <button onClick={() => setSelectedCitation(null)} className="text-neutral-500 hover:text-white">✕</button>
+            <button onClick={() => setSelectedCitation(null)} className="text-neutral-500 hover:text-white p-1.5 rounded hover:bg-brand-bg-subtle min-h-[36px] min-w-[36px] flex items-center justify-center" aria-label="Close sources panel">✕</button>
           </div>
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {selectedCitation.map(c => (

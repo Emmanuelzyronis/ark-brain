@@ -191,11 +191,11 @@ export default function ConnectorsPage() {
                   </div>
 
                   {(isConnecting || connector?.status === 'connecting') && (
-                    <div className="mt-3 space-y-1.5">
+                    <div className="mt-3 space-y-1.5" role="status" aria-live="polite">
                       <div className="flex justify-between text-xs text-neutral-500">
                         <span>Indexing documents...</span>
                       </div>
-                      <div className="h-1.5 bg-brand-border rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-brand-border rounded-full overflow-hidden" role="progressbar" aria-label={`Connecting ${source.label}`} aria-valuemin={0} aria-valuemax={100}>
                         <div className="h-full bg-primary-500 rounded-full shimmer" style={{ width: '60%' }} />
                       </div>
                       <p className="text-xs text-neutral-600">Claude is extracting decisions and entities</p>
