@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
+import { Providers } from '@/components/providers'
 import './globals.css'
 
 export const metadata: Metadata = {
   title: 'ArkBrain — Your Team\'s Institutional Memory',
-  description: 'The semantic knowledge graph that answers why your team made every decision. Connect Slack, GitHub, Notion — ask anything.',
+  description: 'Ask why your team made any decision. Get cited answers from GitHub, Slack, and Notion — not guesses.',
   keywords: ['knowledge management', 'institutional memory', 'AI', 'engineering', 'decisions'],
 }
 
@@ -19,7 +20,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className="antialiased">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

@@ -56,15 +56,15 @@ export default function LandingPage() {
         </div>
 
         <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-          The semantic knowledge graph<br />
+          Ask why your team made<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-accent">
-            that answers why
+            any decision
           </span>
         </h1>
 
         <p className="text-xl text-neutral-300 mb-10 max-w-2xl mx-auto">
-          Ask <em className="text-white">&quot;Why did we choose Postgres over MongoDB?&quot;</em> and get a sourced answer
-          citing the exact Slack thread from 14 months ago.
+          Get cited answers from your GitHub, Slack, and Notion — not guesses.{' '}
+          <em className="text-white">&quot;Why did we choose Postgres?&quot;</em> returns the exact PR and Slack thread from 14 months ago.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">

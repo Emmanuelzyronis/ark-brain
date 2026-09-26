@@ -26,6 +26,7 @@ export default function TimelinePage() {
   const [decisions, setDecisions] = useState<Decision[]>([])
   const [typeFilter, setTypeFilter] = useState('all')
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [page, setPage] = useState(1)
   const [hasMore, setHasMore] = useState(false)
   const [total, setTotal] = useState(0)
@@ -48,7 +49,7 @@ export default function TimelinePage() {
       setTotal(data.total)
       setPage(p)
     } catch {
-      //
+      if (p === 1) setLoadError(true)
     } finally {
       setLoading(false)
     }
@@ -92,7 +93,14 @@ export default function TimelinePage() {
 
       {/* Decisions */}
       <div className="space-y-4">
-        {loading && page === 1 ? (
+        {loadError ? (
+          <div className="text-center py-20">
+            <div className="text-4xl mb-4">⚠️</div>
+            <h3 className="text-lg font-semibold text-white mb-2">Failed to load decisions</h3>
+            <p className="text-neutral-400 text-sm mb-6">Check your connection and try again.</p>
+            <Button onClick={() => loadDecisions(1)}>Retry</Button>
+          </div>
+        ) : loading && page === 1 ? (
           Array.from({ length: 5 }).map((_, i) => (
             <Card key={i}>
               <CardBody className="space-y-3">

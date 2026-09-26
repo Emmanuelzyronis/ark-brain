@@ -7,24 +7,38 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/use-auth'
 
+interface FieldErrors {
+  name?: string
+  workspace_name?: string
+  password?: string
+}
+
 export default function RegisterPage() {
   const router = useRouter()
   const { register } = useAuth()
   const [form, setForm] = useState({ name: '', email: '', password: '', workspace_name: '' })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
+
+  const validate = (): boolean => {
+    const errs: FieldErrors = {}
+    if (!form.name.trim()) errs.name = 'Full name is required'
+    if (!form.workspace_name.trim()) errs.workspace_name = 'Workspace name is required'
+    else if (form.workspace_name.trim().length < 2) errs.workspace_name = 'Workspace name must be at least 2 characters'
+    if (form.password.length < 8) errs.password = 'Password must be at least 8 characters'
+    setFieldErrors(errs)
+    return Object.keys(errs).length === 0
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    if (form.password.length < 8) {
-      setError('Password must be at least 8 characters')
-      return
-    }
+    if (!validate()) return
     setLoading(true)
     try {
       await register(form.email, form.password, form.name, form.workspace_name)
-      router.push('/dashboard')
+      router.push('/onboarding')
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {
@@ -32,7 +46,12 @@ export default function RegisterPage() {
     }
   }
 
-  const update = (field: string, value: string) => setForm(f => ({ ...f, [field]: value }))
+  const update = (field: keyof typeof form, value: string) => {
+    setForm(f => ({ ...f, [field]: value }))
+    if (fieldErrors[field as keyof FieldErrors]) {
+      setFieldErrors(e => ({ ...e, [field]: undefined }))
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#1C1033] flex items-center justify-center px-4 py-12">
@@ -48,12 +67,12 @@ export default function RegisterPage() {
 
         <div className="bg-brand-surface border border-brand-border rounded-xl p-8">
           {error && (
-            <div className="mb-4 px-4 py-3 rounded-lg bg-error/10 border border-error/20 text-error text-sm">
+            <div className="mb-4 px-4 py-3 rounded-lg bg-red-950/50 border border-red-500/30 text-red-300 text-sm" role="alert">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <Input
               id="name"
               label="Full name"
@@ -62,6 +81,7 @@ export default function RegisterPage() {
               value={form.name}
               onChange={e => update('name', e.target.value)}
               autoComplete="name"
+              error={fieldErrors.name}
             />
             <Input
               id="email"
@@ -81,6 +101,7 @@ export default function RegisterPage() {
               value={form.workspace_name}
               onChange={e => update('workspace_name', e.target.value)}
               autoComplete="organization"
+              error={fieldErrors.workspace_name}
             />
             <Input
               id="password"
@@ -91,6 +112,7 @@ export default function RegisterPage() {
               onChange={e => update('password', e.target.value)}
               required
               autoComplete="new-password"
+              error={fieldErrors.password}
             />
             <Button type="submit" className="w-full" loading={loading}>
               Create account →

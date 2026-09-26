@@ -36,8 +36,8 @@ export default function TeamPage() {
     try {
       const data = await api.get<Member[]>(`/api/workspaces/${workspaceId}/members`)
       setMembers(data)
-    } catch {
-      //
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load team members')
     } finally {
       setLoading(false)
     }

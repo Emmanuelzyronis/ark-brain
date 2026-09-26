@@ -2,6 +2,28 @@
 
 **The semantic knowledge graph that answers why your team made every decision**
 
+## Demo
+
+> Interactive terminal demo — [view the full case study](https://emmanuelzyronis.vercel.app/work/ark-brain)
+
+```text
+$ curl -s -X POST http://localhost:3001/api/query \
+  -d '{"question":"Why did we switch from REST to GraphQL?","workspace":"eng"}' | jq .
+
+Searching workspace: GitHub PRs · Slack threads · Notion pages ...
+
+{
+  "answer": "The switch was driven by mobile performance requirements in Q3 2025. The iOS team was making 7-12 API calls per screen, causing visible lag on 4G. Decision made in RFC-041 after evaluating tRPC, GraphQL, and a custom batch endpoint. GraphQL won on team familiarity and schema-first contracts.",
+  "sources": [
+    { "type": "github_pr", "title": "RFC-041: API migration to GraphQL", "date": "2025-08-14" },
+    { "type": "slack",     "channel": "#eng-arch",                       "date": "2025-08-10" },
+    { "type": "notion",    "title": "ADR-019: GraphQL adoption rationale","date": "2025-08-15" }
+  ],
+  "confidence": "high",
+  "source_count": 3
+}
+```
+
 ## Problem
 
 Knowledge dies in Notion, Confluence, Slack, and engineer brains. New hires take 6+ months to reach full productivity. When a senior engineer leaves, their institutional knowledge is gone. Existing enterprise search (Glean, Notion AI) is string-matching over siloed documents — not semantic reasoning over connected decisions, architecture choices, and institutional history.

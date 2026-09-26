@@ -40,12 +40,14 @@ export default function DashboardPage() {
   const [decisions, setDecisions] = useState<Decision[]>([])
   const [connectors, setConnectors] = useState<Connector[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
 
   const workspaceId = workspaces[0]?.id
 
   const loadData = useCallback(async () => {
     if (!workspaceId) return
     setLoading(true)
+    setLoadError(false)
     try {
       const [statsData, decisionsData, connectorsData] = await Promise.all([
         api.get<Stats>(`/api/workspaces/${workspaceId}/stats`),
@@ -57,6 +59,7 @@ export default function DashboardPage() {
       setConnectors(connectorsData)
     } catch (err) {
       console.error('Dashboard load error:', err)
+      setLoadError(true)
     } finally {
       setLoading(false)
     }
@@ -82,6 +85,17 @@ export default function DashboardPage() {
         <h2 className="text-xl font-bold text-white mb-2">No workspace yet</h2>
         <p className="text-neutral-400 mb-6">Create a workspace to get started with ArkBrain</p>
         <Button onClick={() => router.push('/register')}>Create workspace</Button>
+      </div>
+    )
+  }
+
+  if (loadError) {
+    return (
+      <div className="max-w-md mx-auto text-center py-20">
+        <div className="text-5xl mb-4">⚠️</div>
+        <h2 className="text-xl font-bold text-white mb-2">Failed to load dashboard</h2>
+        <p className="text-neutral-400 mb-6">Check your connection and try again.</p>
+        <Button onClick={loadData}>Retry</Button>
       </div>
     )
   }

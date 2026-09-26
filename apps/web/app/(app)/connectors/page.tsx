@@ -7,6 +7,7 @@ import { Card, CardBody } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { formatRelativeTime, SOURCE_ICONS } from '@/lib/utils'
+import { useToast } from '@/components/ui/toast'
 
 interface Connector {
   id: string
@@ -27,20 +28,23 @@ const SOURCES = [
 
 export default function ConnectorsPage() {
   const { workspaces } = useAuth()
+  const { toast } = useToast()
   const workspaceId = workspaces[0]?.id
   const [connectors, setConnectors] = useState<Connector[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [syncing, setSyncing] = useState<string | null>(null)
   const [connecting, setConnecting] = useState<string | null>(null)
 
   const loadConnectors = useCallback(async () => {
     if (!workspaceId) return
     setLoading(true)
+    setLoadError(false)
     try {
       const data = await api.get<Connector[]>(`/api/workspaces/${workspaceId}/connectors`)
       setConnectors(data)
     } catch {
-      //
+      setLoadError(true)
     } finally {
       setLoading(false)
     }
@@ -56,7 +60,6 @@ export default function ConnectorsPage() {
     try {
       await api.post(`/api/workspaces/${workspaceId}/connectors/${source}/demo`)
       await loadConnectors()
-      // Poll for completion
       const interval = setInterval(async () => {
         await loadConnectors()
         const c = await api.get<Connector[]>(`/api/workspaces/${workspaceId}/connectors`)
@@ -64,11 +67,16 @@ export default function ConnectorsPage() {
         if (connector && (connector.status === 'active' || connector.status === 'error')) {
           clearInterval(interval)
           setConnecting(null)
+          if (connector.status === 'active') {
+            toast(`${source} connected — Claude is indexing your data`, 'success')
+          } else {
+            toast(`${source} connection failed`, 'error')
+          }
         }
       }, 3000)
-    } catch (err) {
-      console.error(err)
+    } catch {
       setConnecting(null)
+      toast(`Could not connect ${source}. Try again.`, 'error')
     }
   }
 
@@ -77,9 +85,10 @@ export default function ConnectorsPage() {
     setSyncing(source)
     try {
       await api.post(`/api/workspaces/${workspaceId}/connectors/${source}/sync`)
+      toast(`${source} sync started`, 'info')
       setTimeout(loadConnectors, 2000)
-    } catch (err) {
-      console.error(err)
+    } catch {
+      toast(`Failed to sync ${source}`, 'error')
     } finally {
       setTimeout(() => setSyncing(null), 3000)
     }
@@ -90,8 +99,9 @@ export default function ConnectorsPage() {
     try {
       await api.delete(`/api/workspaces/${workspaceId}/connectors/${source}`)
       await loadConnectors()
-    } catch (err) {
-      console.error(err)
+      toast(`${source} disconnected`, 'info')
+    } catch {
+      toast(`Failed to disconnect ${source}`, 'error')
     }
   }
 
@@ -103,6 +113,13 @@ export default function ConnectorsPage() {
         <h1 className="text-2xl font-bold text-white">Connectors</h1>
         <p className="text-neutral-400 text-sm mt-1">Connect your team&apos;s knowledge sources</p>
       </div>
+
+      {loadError && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-red-950/40 border border-red-500/30 text-red-300 text-sm" role="alert">
+          <span>Failed to load connectors.</span>
+          <button onClick={loadConnectors} className="underline hover:no-underline ml-auto shrink-0">Retry</button>
+        </div>
+      )}
 
       {loading ? (
         <div className="grid md:grid-cols-2 gap-4">
